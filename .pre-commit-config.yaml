@@ -1,5 +1,5 @@
 default_language_version:
-  python: python3.8
+  python: python3.10
 
 repos:
   - repo: https://github.com/ambv/black
@@ -8,7 +8,7 @@ repos:
       - id: black
         language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.0.0
+    rev: v3.2.0
     hooks:
       - id: flake8
       - id: trailing-whitespace
