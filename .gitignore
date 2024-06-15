@@ -8,9 +8,9 @@ backend/app/files
 #Cache folder
 
 __pycache__/
-*.py[cod]
-*$py.class
-*.pyc
+#*.py[cod]
+#*$py.class
+#*.pyc
 .alcache/
 #Symbols folder
 .alpackages/
