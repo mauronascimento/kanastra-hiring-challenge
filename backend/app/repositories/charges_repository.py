@@ -3,7 +3,6 @@ from typing import List
 from fastapi import HTTPException
 from fastapi_sqlalchemy import db
 
-from app.models.models import StatusFile
 from app.models.models import Charges
 
 
