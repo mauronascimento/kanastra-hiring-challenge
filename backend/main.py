@@ -8,12 +8,9 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from healthcheck import HealthCheck
 from app.api import receive_upload_file
-from app.database.database import SessionLocal, init_db
+from app.api import list_status_file
+from app.database.database import init_db
 
-# from sqlalchemy.orm import Session
-# from models import Charge
-# from database import SessionLocal, init_db
-# from schemas import ChargeCreate, ChargeInDB
 
 log = logging.getLogger()
 
@@ -35,15 +32,11 @@ app.add_middleware(
 )
 
 app.add_api_route(
-    "/health",
-    lambda: HealthCheck(),
-    summary="HealthCheck",
-    tags=["Info"],
+    "/health", lambda: HealthCheck(), summary="HealthCheck", tags=["Info"]
 )
-app.include_router(
-    receive_upload_file.router,
-    tags=["Upload de arquivo csv"],
-)
+app.include_router(receive_upload_file.router, tags=["Upload of the files .csv"])
+
+app.include_router(list_status_file.router, tags=["List status of sent files"])
 
 
 @app.exception_handler(HTTPException)
@@ -64,46 +57,20 @@ async def validation_exception_handler(request, exc):
 def formt_response_error(erro: dict) -> dict:
     return {"code": 422, "message": "=>".join(map(str, erro["loc"]))}
 
-@app.on_event("startup")
-def startup_event():
-    init_db()
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-#
-# @app.get("/")
-# def read_root():
-#     return {"API live!"}
-#
-# @app.get("/hello")
-# def read_root():
-#     return {"Hello Kanastra!"}
-#
-# @app.post("/charges", response_model=ChargeInDB)
-# def create_charge(charge: ChargeCreate, db: Session = Depends(get_db)):
-#     db_charge = Charge(
-#         name=charge.name,
-#         government_id=charge.government_id,
-#         email=charge.email,
-#         debt_amount=charge.debt_amount,
-#         debt_due_date=charge.debt_due_date
-#     )
-#     db.add(db_charge)
-#     db.commit()
-#     db.refresh(db_charge)
-#     return db_charge
-#
-# @app.get("/charges/{government_id}/total")
-# def get_total_debt(government_id: str, db: Session = Depends(get_db)):
-#     charges = db.query(Charge).filter(Charge.government_id == government_id).all()
-#     if not charges:
-#         raise HTTPException(status_code=404, detail="No charges found for this Gov. ID")
-#     total_debt_amount = sum(charge.debt_amount for charge in charges)
-#     return total_debt_amount
+db = init_db(app)
+
+
+@app.on_event("startup")
+async def startup():
+    # TODO se der tempo colocar um schedule para envido de email/boleto
+    await db.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await db.disconnect()
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

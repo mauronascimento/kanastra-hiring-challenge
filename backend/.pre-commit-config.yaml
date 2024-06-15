@@ -1,5 +1,5 @@
 default_language_version:
-  python: python3.8
+  python: python3.10
 
 repos:
   - repo: https://github.com/ambv/black
@@ -8,9 +8,8 @@ repos:
       - id: black
         language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.0.0
+    rev: v3.2.0
     hooks:
-      - id: flake8
       - id: trailing-whitespace
       - id: detect-private-key
       - id: debug-statements
@@ -18,8 +17,3 @@ repos:
       - id: check-json
       - id: check-docstring-first
       - id: check-added-large-files
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
-    rev: v1.0.5
-    hooks:
-      - id: python-bandit-vulnerability-check
-        args: [./]

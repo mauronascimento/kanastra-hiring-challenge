@@ -1,28 +1,37 @@
+from fastapi import HTTPException
+from app.schemas.response_file_receive import ResponseFileReceive
+from app.repositories.status_file_repository import StatusFileRepository
+from app.models.models import StatusFile
+from app.schemas.status import Status
 
-
-from typing import Any, Dict
-from fastapi import UploadFile, File
-# from fastapi import HTTPException
-# from sqlalchemy.orm import Session
-# from app.schemas.schemas import Charges
-# from app.models.models import ChargesModel
-from backend.app.schemas.response_file_receive import ResponseFileReceive
 
 class ProcessesReceivedFile:
+    @staticmethod
+    def received_save(data_file: ResponseFileReceive):
+
+        try:
+            return StatusFileRepository().saves_files(StatusFile(data_file))
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
 
     @staticmethod
-    def received_save(teste):
-        pass
-        #
-        # file_name = teste.filename
-        # generate_name_timestamp = str(datetime.timestamp(datetime.now())).replace(".", "")
-        # file_renamed = f"{generate_name_timestamp}-{file_name}"
-        # path = f"app/files/{file_renamed}"
-        # with open(path, 'w+b') as file:
-        #     shutil.copyfileobj(uploaded_file.file, file)
-        #
-        # return ResponseFileReceive(
-        #     file= uploaded_file.filename,
-        #     file_renamed=file_renamed,
-        #     status=Status.QUEUE,
-        # )
+    def read_processes(data_file: ResponseFileReceive):
+
+        try:
+            StatusFileRepository().StatusFileRepository(data_file)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    @staticmethod
+    def update_status_file(id_file: int):
+        try:
+            return StatusFileRepository().update_status_file(id_file, Status.PROCESSED)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
+
+    @staticmethod
+    def list_status_file():
+        try:
+            return StatusFileRepository().list_status_file()
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=str(e))
