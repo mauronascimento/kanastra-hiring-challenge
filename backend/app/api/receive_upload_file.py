@@ -1,4 +1,5 @@
-
+import logging
+import time
 import shutil
 from datetime import datetime
 
@@ -19,6 +20,8 @@ router = APIRouter()
     status_code=201,
 )
 def receive_upload_file(uploaded_file: UploadFile = File(...)):
+
+    initial_time = time.time()
     file_name = uploaded_file.filename
     generate_name_timestamp = str(datetime.timestamp(datetime.now())).replace(".", "")
     file_renamed = f"{generate_name_timestamp}-{file_name}"
@@ -29,8 +32,11 @@ def receive_upload_file(uploaded_file: UploadFile = File(...)):
         file=file_name, file_renamed=file_renamed, status=Status.QUEUE
     )
     id_file = ProcessesReceivedFile.received_save(data_file)
+    ProcessesReceivedFile.processes_file(path)
 
     data_file.status = Status.PROCESSED
     ProcessesReceivedFile.update_status_file(id_file)
 
+    final_time = time.time()
+    print(f"runtime: {final_time - initial_time}")
     return data_file

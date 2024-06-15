@@ -63,7 +63,7 @@ db = init_db(app)
 
 @app.on_event("startup")
 async def startup():
-    # TODO se der tempo colocar um schedule para envido de email/boleto
+    # TODO se der tempo colocar um schedule para envido de email/boleto e arquivos com erro de processamento
     await db.connect()
 
 
