@@ -10,7 +10,7 @@ from app.schemas.charges import Charges
 Base = declarative_base()
 
 
-class Charges(Base):
+class ChargesModel(Base):
     __tablename__ = "charges"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
@@ -18,7 +18,7 @@ class Charges(Base):
     email = Column(String)
     debt_amount = Column(Float)
     debt_due_date = Column(Date)
-    debt_id = Column(UUID(as_uuid=True), default=uuid.uuid4)
+    debt_id = Column(UUID(as_uuid=True), primary_key=False, default=uuid.uuid4)
     is_send_email = Column(Boolean, unique=False, default=False)
     is_send_ticket = Column(Boolean, unique=False, default=False)
     create_at = Column(DateTime, default=datetime.now)
@@ -32,7 +32,7 @@ class Charges(Base):
         self.email = charges.email
         self.debt_amount = charges.debt_amount
         self.debt_due_date = charges.debt_due_date
-        self.debt_id = Charges.debt_id
+        self.debt_id = charges.debt_id
 
 
 class StatusFile(Base):

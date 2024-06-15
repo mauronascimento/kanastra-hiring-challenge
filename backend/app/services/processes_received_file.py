@@ -1,11 +1,12 @@
 import csv
+import uuid
 
 from fastapi import HTTPException
 from app.schemas.response_file_receive import ResponseFileReceive
 from app.repositories.status_file_repository import StatusFileRepository
 from app.repositories.charges_repository import ChargeRepository
 from app.models.models import StatusFile
-from app.models.models import Charges as ChargesModel
+from app.models.models import ChargesModel
 from app.schemas.status import Status
 from app.schemas.charges import Charges
 from app.commons.paginate import paginate
@@ -26,13 +27,13 @@ class ProcessesReceivedFile:
             page_size = 220000
             with open(path, "r") as file:
                 file_csv = csv.reader(file, delimiter=",")
-                for page_number in range(1, 6):
-                    list_charges = []
-                    current_page = paginate(all_items, page_size, page_number)
-                    print(
-                        f"Page {page_number}: {current_page[0]}- {current_page[page_size - 1]}"
-                    )
-                    for i, line in enumerate(file_csv):
+                for i, line in enumerate(file_csv):
+                    for page_number in range(1, 6):
+                        list_charges = []
+                        current_page = paginate(all_items, page_size, page_number)
+                        print(
+                            f"Page {page_number}: {current_page[0]}- {current_page[page_size - 1]}"
+                        )
                         if i >= current_page[0] and i <= current_page[page_size - 1]:
                             list_charges.append(
                                 ChargesModel(
